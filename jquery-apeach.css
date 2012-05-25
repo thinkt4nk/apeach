@@ -4,7 +4,7 @@
 .apeach-group, .apeach-add-and {
 	width: 100%;
 }
-.apeach-group, .apeach-and-selection {
+.apeach-group, .apeach-and-selection, .apeach-group-or, .apeach-or-selection {
 	border: 1px solid #ccc;
 	border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
 }
@@ -21,7 +21,8 @@ div.apeach-and-segment {
 	border-left: 1px solid #ccc;
 	border-right: 1px solid #ccc;
 }
-div.apeach-and-segment:before {
+div.apeach-and-segment:before,
+div.apeach-and-selection:before {
 	content: "";
 	display: block;
 	position: absolute;
@@ -32,14 +33,7 @@ div.apeach-and-segment:before {
 	background-color: #efefef;
 }
 div.apeach-and-selection:before {
-	content: "";
-	display: block;
-	position: absolute;
-	height: 1px;
-	width: 100px;
-	top: -1px;
 	left: 80px;
-	background-color: #efefef;
 }
 div.apeach-and-selection {
 	color: blue;
@@ -50,12 +44,20 @@ div.apeach-and-selection {
 
 /* Or Segments */
 div.apeach-group-or {
-	padding: 6px;
+	padding-top: 10px;
 }
 div.apeach-group-or > * {
-	margin-left: 6px;
+	margin-left: 10px;
 }
 div.button-select, div.button-select-alt {
+	background: #fafafa; /* Old browsers */
+	background: -moz-linear-gradient(top, #fafafa 0%, #dadada 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fafafa), color-stop(100%,#dadada)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #fafafa 0%,#dadada 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #fafafa 0%,#dadada 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #fafafa 0%,#dadada 100%); /* IE10+ */
+	background: linear-gradient(top, #fafafa 0%,#dadada 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#dadada',GradientType=0 ); /* IE6-9 */
 	position: relative;
 	float: left;
 	width: 100px;
@@ -63,6 +65,11 @@ div.button-select, div.button-select-alt {
 	border: 1px solid #ccc;
 	border-radius: 2px; -moz-border-radius: 2px; -webkit-border-radius: 2px;
 	padding: 1px 5px;
+	cursor: pointer;
+}
+div.apeach-group-or input, div.apeach-group-or a {
+	height: 24px;
+	line-height: 23px;
 }
 ul.button-options {
 	display: block;
@@ -70,3 +77,53 @@ ul.button-options {
 	left: -9999px;
 }
 div.apeach-group-or a.remove { cursor: pointer; }
+div.apeach-group-or {
+	background-color: white;
+	height: 36px;
+	margin: 10px 10px 0 10px;
+}
+div.apeach-or-segment:before {
+	content: "";
+	display: block;
+	position: absolute;
+	height: 1px;
+	width: 100px;
+	top: -1px;
+	left; 0;
+	background-color: white;
+}
+div.apeach-or-segment {
+	position: relative;
+	padding: 5px 0;
+	height: 20px;
+	width: 100px;
+	margin-left: 80px;
+	font-weight: bold;
+	text-align: center;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	background-color: white;
+}
+div.apeach-or-segment:before,
+div.apeach-or-selection:before {
+	content: "";
+	display: block;
+	position: absolute;
+	height: 1px;
+	width: 100px;
+	top: -1px;
+	left: 0;
+	background-color: white;
+}
+div.apeach-or-selection:before {
+	left: 70px;
+}
+div.apeach-or-selection {
+	position: relative;
+	margin: 0 10px 10px 10px;
+	background-color: white;
+	height: 36px;
+	line-height: 26px;
+	border: 1px solid #ccc;
+	padding: 10px 0 0 10px;
+}
