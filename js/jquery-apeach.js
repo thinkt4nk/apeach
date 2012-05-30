@@ -32,8 +32,8 @@
 		 * @return {void}
 		 */
 		triggerEvent = function(element, event_name, data) {
-			var event = $.Event(event_name, data);
-			element.trigger(event);
+			var event = $.Event(event_name);
+			element.trigger(event, [data]);
 		};
 
 	//============================================================================
@@ -220,7 +220,7 @@
 			// stub
 		},
 		_onGroupRuleMetricChange: function(e) {
-
+			console.log('on group rule metric change!!',arguments);
 		},
 		//..........................................................................
 		// Private Utility Methods
@@ -228,7 +228,7 @@
 		_bindEvents: function() {
 			this.element.delegate('.remove-group', 'click', $.proxy(this._onRemoveGroup, this));
 			this.element.delegate('select.group-operator-type', 'change', $.proxy(this._onGroupOperatorChange, this));
-			this.element.delegate('select.group-rule-metric', 'change', $.proxy(this._onGroupRuleMetricChange, this));
+			this.element.delegate('.group-rule-metric', 'change', $.proxy(this._onGroupRuleMetricChange, this));
 		},
 		_installRemoveGroup: function() {
 			var remove_element = $('<div/>').addClass('remove-group').text('Remove');
@@ -296,7 +296,7 @@
 				metric_options.push(metric_option);
 			});
 
-			metric_selector.apeachselectbutton({dataProvider: metric_options});
+			metric_selector.apeachselectbutton({dataProvider: metric_options, style: 'alt'});
 			operator_selector.apeachselectbutton({dataProvider: operator_options});
 			rule_container
 				.append(metric_selector, operator_selector)
@@ -325,17 +325,21 @@
 			dataProvider: [],
 			style: null // {optional} May provide 'alt' to style with alt style
 		},
-		selected: null,
+		__hover: false,
 		_create: function() {
-			console.log('selectbutton data provider::',this.options.dataProvider);
+			//console.log('selectbutton data provider::',this.options.dataProvider);
+			this.elements = [];
+			this.selected = null;
 		},
 		_init: function() {
-
+			this._bindEvents();
+			this._createSelectButton();
+			this._createSelectOptions();
+			this._repaint();
 		},
 		_setOption: function(key, value) {
 			if (key === 'dataProvider') {
 				this.options.dataProvider = value;
-				this.selected = null;
 				this._repaint();
 			}
 			else
@@ -344,12 +348,65 @@
 		//..........................................................................
 		// Event Handlers
 		//..........................................................................
-
+		_onButtonOptionClick: function(e) {
+			e.stopPropagation();
+			var
+				target = $(e.target),
+				selected = target.data('value'),
+				event = {
+					selected: selected
+				};
+			// TODO: change internal state
+			this._hideOptions();
+			triggerEvent(this.element, 'change', event);
+		},
 		//..........................................................................
 		// Private Utility Methods
 		//..........................................................................
+		_bindEvents: function() {
+			this.element.delegate('li.button-option', 'click', $.proxy(this._onButtonOptionClick, this));
+			this.element.hover(
+				$.proxy(this._showOptions, this),
+				$.proxy(this._hideOptions, this)
+			);
+		},
+		_showOptions: function() {
+			this.elements.options.css({left: '-1px'});
+		},
+		_hideOptions: function() {
+			this.elements.options.css({left: '-9999px'});
+		},
+		_createSelectButton: function() {
+			var element_class = 'button-select';
+			if (this.options.style != null && this.options.style === 'alt')
+				element_class += '-alt';
+			this.element.addClass(element_class);
+		},
+		_createSelectOptions: function() {
+			this.elements.options = $('<ul/>').addClass('button-options');
+			this.element.append(this.elements.options);
+		},
 		_repaint: function() {
-
+			// empty options
+			this.elements.options
+				.detach()
+				.html('');
+			// rebuild options
+			$.each(this.options.dataProvider, $.proxy(function(i, data) {
+				var select_option = 
+					$('<li/>')
+						.addClass('button-option')
+						.data('value',data.value)
+						.text(data.label);
+				this.elements.options.append(select_option);
+				// set internal state for selected, and display in the select button
+				if (data.selected != null && data.selected === true) {
+					select_option.addClass('selected');
+					this.element.text(data.label);
+					this.selected = data.value;
+				}
+			},this));
+			this.element.append(this.elements.options);
 		},
 		//..........................................................................
 		// Public Methods
