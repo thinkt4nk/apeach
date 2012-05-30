@@ -1,4 +1,5 @@
-.apeach-group, .apeach-and-segment, .apeach-and-selection {
+.apeach-group, .apeach-group:before, .apeach-and-segment, .apeach-and-selection,
+.apeach-group .remove-group {
 	background-color: #efefef;
 }
 .apeach-group, .apeach-add-and {
@@ -10,6 +11,30 @@
 }
 
 /* And Segments */
+div.apeach-group {
+	margin-top: 30px;
+	position: relative;
+}
+div.apeach-group:before {
+	display: block;
+}
+div.apeach-group .remove-group {
+	position: absolute;
+	right: 30px;
+	top: -26px;
+	height: 25px;
+	width: 70px;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-radius: 2px; -moz-border-radius: 2px; -webkit-border-radius: 2px;
+	text-align: center;
+	color: #0C5DA5;
+	cursor: pointer;
+}
+div.apeach-operator-type {
+	margin: 10px;
+}
 div.apeach-and-segment {
 	position: relative;
 	padding: 5px 0;
@@ -36,7 +61,7 @@ div.apeach-and-selection:before {
 	left: 80px;
 }
 div.apeach-and-selection {
-	color: blue;
+	color: #0C5DA5;
 	padding: 10px 10px;
 	margin-top: -1px;
 	position: relative;
@@ -169,6 +194,6 @@ div.apeach-or-selection {
 	line-height: 26px;
 	border: 1px solid #ccc;
 	padding: 10px 0 0 10px;
-	color: blue;
+	color: #0C5DA5;
 }
 div.apeach-or-selection span { cursor: pointer; }

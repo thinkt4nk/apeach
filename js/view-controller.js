@@ -4,17 +4,15 @@
 	$(function() {
 		
 		var person = {
-			attributes: {
-				"firstName": {
-					type: "text"
-				},
-				"lastName": {
-					type: "text"
-				}
-			}
+			attributes: [
+				{value: 'firstName', label: 'First Name', type: 'string'},
+				{value: 'lastName', label: 'Last Name', type: 'string'},
+			]
 		};
 
-		$('.apeach').apeach([person]);
+		$('#apeach').apeach({
+			model: person
+		});
 	});
 
 })(jQuery);
