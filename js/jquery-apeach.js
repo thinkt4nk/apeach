@@ -51,9 +51,6 @@
 			model: {},
 			operators: null // {optional} custom operators
 		},
-		elements: {
-			groups: {}
-		},
 		//..........................................................................
 		// Overriden Methods
 		//..........................................................................
@@ -63,6 +60,9 @@
 		 * @return {void}
 		 */
 		_create: function() {
+			this.elements = {
+				groups: []
+			};
 			this.element.addClass('apeach-container');
 		},
 		/**
@@ -99,17 +99,14 @@
 			delete this.elements.groups[data.uid];
 		},
 		_onCreateGroup: function(e) {
-			var
-				target = $(e.target),
-				group_type = parseInt(target.val());
-			this._addGroup(group_type);
+			this._addGroup(GROUP_TYPE_INCLUSION);
 		},
 		//..........................................................................
 		// Private Utility Methods
 		//..........................................................................
 		_bindEvents: function() {
 			this.element.bind('removegroup', $.proxy(this._onRemoveGroup, this));
-			this.element.delegate('.apeach-and-selection select', 'change', $.proxy(this._onCreateGroup, this));
+			this.element.delegate('.apeach-and-selection span', 'click', $.proxy(this._onCreateGroup, this));
 		},
 		_initializeGroupCreator: function() {
 			var
@@ -137,6 +134,17 @@
 					uid: uid
 				});
 			this.elements.groups[uid] = group_div;
+			if (getObjectKeys(this.elements.groups).length > 1) {
+				this.elements.groupCreator
+					.before(
+						$('<div/>')
+							.addClass('apeach-add-and')
+							.append($('<div/>').addClass('apeach-and-segment').text('and'))
+					)
+			}
+			else {
+				group_div.addClass('first');
+			}
 			this.elements.groupCreator.before(group_div);
 		},
 
@@ -177,9 +185,6 @@
 			uid: null, // {required} The uid of group
 			operatorSelectText: 'Group Operator Type: ' // override not currently supported
 		},
-		elements: {
-			rules: {}
-		},
 		//..........................................................................
 		// Overriden Methods
 		//..........................................................................
@@ -190,7 +195,9 @@
 		 */
 		_create: function() {
 			this.element.addClass('apeach-group');
-			this.elements.rules = {};
+			this.elements = {
+				rules: {}
+			};
 		},
 		/**
 		 * Initialize all elements
