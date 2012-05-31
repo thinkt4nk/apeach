@@ -35,9 +35,9 @@
 			var event = $.Event(event_name);
 			element.trigger(event, [data]);
 		},
-		getObjectKeys = function(object) {
+		getObjectKeys = function(o) {
 			var keys = [];
-			$.each(object, function(key, value) {
+			$.each(o, function(key, value) {
 				keys.push(key);
 			});
 			return keys;
@@ -61,7 +61,7 @@
 		 */
 		_create: function() {
 			this.elements = {
-				groups: []
+				groups: {}
 			};
 			this.element.addClass('apeach-container');
 		},
@@ -92,8 +92,19 @@
 		_onRemoveGroup: function(e, data) {
 			if (data.uid == null)
 				return;
+			var group = this.elements.groups[data.uid];
 
-			this.elements.groups[data.uid]
+			if (group.hasClass('first')) {
+				group
+					.next('.apeach-add-and')
+						.remove()
+						.end()
+					.next('.apeach-group').addClass('first');
+			}
+			else {
+				group.prev('.apeach-add-and').remove();
+			}
+			group
 				.apeachgroup('destroy')
 				.remove();
 			delete this.elements.groups[data.uid];
@@ -134,13 +145,14 @@
 					uid: uid
 				});
 			this.elements.groups[uid] = group_div;
-			if (getObjectKeys(this.elements.groups).length > 1) {
+			var group_keys = getObjectKeys(this.elements.groups);
+			if (group_keys.length > 1) {
 				this.elements.groupCreator
 					.before(
 						$('<div/>')
 							.addClass('apeach-add-and')
 							.append($('<div/>').addClass('apeach-and-segment').text('and'))
-					)
+					);
 			}
 			else {
 				group_div.addClass('first');
