@@ -363,7 +363,8 @@
 			var 
 				rule_container = $('<div/>').addClass('apeach-group-or'),
 				metric_selector = $('<div/>').addClass('group-rule-metric'),
-				operator_selector = $('<div/>').addClass('group-rule-operator');
+				operator_selector = $('<div/>').addClass('group-rule-operator'),
+				rule_value = $('<input/>').attr('type','text').addClass('group-rule-value');
 
 			// build the options for the metric and operator
 			var 
@@ -421,7 +422,7 @@
 			}
 			rule_container
 				.data('uid',rule_uid)
-				.append(metric_selector, operator_selector, delete_anchor)
+				.append(metric_selector, operator_selector, rule_value, delete_anchor)
 				.insertBefore(this.elements.ruleCreator);
 		},
 
@@ -429,7 +430,25 @@
 		// Public Methods
 		//..........................................................................
 		getQuery: function() {
-			// stub
+			var 
+				type = (this.options.type === GROUP_TYPE_INCLUSION) ? true : false,
+				query = {
+					include: type,
+					rules: []
+				};
+			$.each(this.elements.rules, function(uid, rule) {
+				var
+					metric_id = rule.find('.group-rule-metric').apeachselectbutton('getValue'),
+					operator = rule.find('.group-rule-operator').apeachselectbutton('getValue'),
+					value = rule.find('.group-rule-value').val(),
+					rule_definition = {
+						metric_id: metric_id,
+						operator: operator,
+						value: value
+					};
+				query.rules.push(rule_definition);
+			});
+			return query;
 		},
 		getType: function() {
 			return this.options.type;

@@ -10,8 +10,13 @@
 			]
 		};
 
-		$('#apeach').apeach({
+		var apeach_container = $('#apeach');
+		apeach_container.apeach({
 			model: person
+		});
+
+		$('#submitButton').click(function() {
+			console.log('query::',apeach_container.apeach('getQuery'));
 		});
 	});
 
