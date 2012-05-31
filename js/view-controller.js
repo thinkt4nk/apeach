@@ -6,7 +6,7 @@
 		var person = {
 			attributes: [
 				{value: 'firstName', label: 'First Name', type: 'string'},
-				{value: 'lastName', label: 'Last Name', type: 'string'},
+				{value: 'lastName', label: 'Last Name', type: 'number'},
 			]
 		};
 

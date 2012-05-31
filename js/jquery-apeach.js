@@ -183,6 +183,7 @@
 		 */
 		_create: function() {
 			this.element.addClass('apeach-group');
+			this.elements.rules = {};
 		},
 		/**
 		 * Initialize all elements
@@ -212,21 +213,53 @@
 		//..........................................................................
 		_onRemoveGroup: function(e) {
 			var uid = this.options.uid;
-			triggerEvent(this.element, 'removegroup', $.extend(e, {
+			triggerEvent(this.element, 'removegroup', {
 				uid: uid
-			}));
+			});
 		},
 		_onGroupOperatorChange: function(e) {
 			// stub
 		},
-		_onGroupRuleMetricChange: function(e) {
-			console.log('on group rule metric change!!',arguments);
+		_onGroupRuleMetricChange: function(e, data) {
+			var target = $(e.target);
+			if (data.selected != null) {
+				var
+					container = target.closest('.apeach-group-or'),
+					related_operator = container.find('.group-rule-operator');
+				// update the operator select's data provider
+				var metric_operators = [];
+				$.each(this.options.model.attributes, function(i, metric) {
+					if (metric.value === data.selected) {
+						metric_operators = operators[metric.type];
+					}
+				});
+				related_operator.apeachselectbutton('option', 'dataProvider', metric_operators);
+			}
+		},
+		_onRemoveRule: function(e) {
+			var 
+				target = $(e.target),
+				rule_container = target.closest('.apeach-group-or'),
+				rule_uid = rule_container.data('uid');
+
+			// if more than one rule
+			var keys = [];
+			$.each(this.elements.rules, function(key, value) { keys.push(key); });
+			if (keys.length > 1) {
+				// remove rule
+				rule_container.remove();
+				delete this.elements.rules[rule_uid];
+			}
+			else {
+				alert('You may not delete the only rule in this group.');
+			}
 		},
 		//..........................................................................
 		// Private Utility Methods
 		//..........................................................................
 		_bindEvents: function() {
 			this.element.delegate('.remove-group', 'click', $.proxy(this._onRemoveGroup, this));
+			this.element.delegate('.remove', 'click', $.proxy(this._onRemoveRule, this));
 			this.element.delegate('select.group-operator-type', 'change', $.proxy(this._onGroupOperatorChange, this));
 			this.element.delegate('.group-rule-metric', 'change', $.proxy(this._onGroupRuleMetricChange, this));
 		},
@@ -264,9 +297,17 @@
 		},
 		_installRuleCreator: function() {
 			var 
+				rule_segment = $('<div/>').addClass('apeach-or-segment').text('or'),
+				rule_selection = $('<div/>').addClass('apeach-or-selection').append($('<span/>').text("Add 'OR' statement")),
+				rule_creator = $('<div/>').addClass('apeach-add-or').append(rule_segment, rule_selection);
+
+			this.elements.ruleCreator = rule_creator.appendTo(this.element);
+		},
+		_addRule: function() {
+			var 
 				rule_container = $('<div/>').addClass('apeach-group-or'),
 				metric_selector = $('<div/>').addClass('group-rule-metric'),
-				operator_selector = $('<div/>');
+				operator_selector = $('<div/>').addClass('group-rule-operator');
 
 			// build the options for the metric and operator
 			var 
@@ -298,12 +339,13 @@
 
 			metric_selector.apeachselectbutton({dataProvider: metric_options, style: 'alt'});
 			operator_selector.apeachselectbutton({dataProvider: operator_options});
+			var delete_anchor = $('<a/>').addClass('remove').text('Delete');
+			var rule_uid = guid();
+			this.elements.rules[rule_uid] = rule_container;
 			rule_container
-				.append(metric_selector, operator_selector)
-				.appendTo(this.element);
-		},
-		_addRule: function() {
-
+				.data('uid',rule_uid)
+				.append(metric_selector, operator_selector, delete_anchor)
+				.insertBefore(this.elements.ruleCreator);
 		},
 
 		//..........................................................................
@@ -317,105 +359,4 @@
 		}
 	});
 
-	//============================================================================
-	// Apeach Select Button Widget
-	//============================================================================
-	$.widget('demo.apeachselectbutton', {
-		options: {
-			dataProvider: [],
-			style: null // {optional} May provide 'alt' to style with alt style
-		},
-		__hover: false,
-		_create: function() {
-			//console.log('selectbutton data provider::',this.options.dataProvider);
-			this.elements = [];
-			this.selected = null;
-		},
-		_init: function() {
-			this._bindEvents();
-			this._createSelectButton();
-			this._createSelectOptions();
-			this._repaint();
-		},
-		_setOption: function(key, value) {
-			if (key === 'dataProvider') {
-				this.options.dataProvider = value;
-				this._repaint();
-			}
-			else
-				$.Widget.prototype._setOption.apply(this, arguments);
-		},
-		//..........................................................................
-		// Event Handlers
-		//..........................................................................
-		_onButtonOptionClick: function(e) {
-			e.stopPropagation();
-			var
-				target = $(e.target),
-				selected = target.data('value'),
-				event = {
-					selected: selected
-				};
-			// TODO: change internal state
-			this._hideOptions();
-			triggerEvent(this.element, 'change', event);
-		},
-		//..........................................................................
-		// Private Utility Methods
-		//..........................................................................
-		_bindEvents: function() {
-			this.element.delegate('li.button-option', 'click', $.proxy(this._onButtonOptionClick, this));
-			this.element.hover(
-				$.proxy(this._showOptions, this),
-				$.proxy(this._hideOptions, this)
-			);
-		},
-		_showOptions: function() {
-			this.elements.options.css({left: '-1px'});
-		},
-		_hideOptions: function() {
-			this.elements.options.css({left: '-9999px'});
-		},
-		_createSelectButton: function() {
-			var element_class = 'button-select';
-			if (this.options.style != null && this.options.style === 'alt')
-				element_class += '-alt';
-			this.element.addClass(element_class);
-		},
-		_createSelectOptions: function() {
-			this.elements.options = $('<ul/>').addClass('button-options');
-			this.element.append(this.elements.options);
-		},
-		_repaint: function() {
-			// empty options
-			this.elements.options
-				.detach()
-				.html('');
-			// rebuild options
-			$.each(this.options.dataProvider, $.proxy(function(i, data) {
-				var select_option = 
-					$('<li/>')
-						.addClass('button-option')
-						.data('value',data.value)
-						.text(data.label);
-				this.elements.options.append(select_option);
-				// set internal state for selected, and display in the select button
-				if (data.selected != null && data.selected === true) {
-					select_option.addClass('selected');
-					this.element.text(data.label);
-					this.selected = data.value;
-				}
-			},this));
-			this.element.append(this.elements.options);
-		},
-		//..........................................................................
-		// Public Methods
-		//..........................................................................
-		getValue: function() {
-			// stub
-		},
-		setSelected: function(selected) {
-			// stub
-		}
-	});
 })(jQuery);
