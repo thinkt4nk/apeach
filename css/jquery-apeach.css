@@ -91,46 +91,6 @@ div.apeach-group-or {
 div.apeach-group-or > * {
 	margin-left: 10px;
 }
-div.button-select, div.button-select-alt {
-	position: relative;
-	float: left;
-	width: 100px;
-	height: 20px;
-	border: 1px solid #ccc;
-	border-radius: 2px; -moz-border-radius: 2px; -webkit-border-radius: 2px;
-	padding: 1px 5px;
-	cursor: pointer;
-}
-div.button-select {
-	background: #fafafa; /* Old browsers */
-	background: -moz-linear-gradient(top, #fafafa 0%, #dadada 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fafafa), color-stop(100%,#dadada)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #fafafa 0%,#dadada 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #fafafa 0%,#dadada 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #fafafa 0%,#dadada 100%); /* IE10+ */
-	background: linear-gradient(top, #fafafa 0%,#dadada 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#dadada',GradientType=0 ); /* IE6-9 */
-}
-div.button-select-alt {
-	background-color: #9DB675;
-	border-color: #6B7D4B;
-	color: white;
-	width: 200px;
-}
-div.button-select-alt:after, div.button-select:after {
-	display: block;
-	content: "";
-	position: absolute;
-	right: 5px;
-	top: 10px;
-	height: 10px;
-	width: 10px;
-	background-image: url(menu_down.gif);
-	background-repeat: no-repeat;
-}
-div.button-select-alt:after {
-	background-image: url(menu_down_light.gif);
-}
 div.apeach-group-or input, div.apeach-group-or a {
 	height: 24px;
 	line-height: 23px;

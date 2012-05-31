@@ -1,0 +1,3 @@
+[submodule "vendor/mandrin"]
+	path = vendor/mandrin
+	url = git@github.com:thinkt4nk/mandrin

@@ -4,7 +4,7 @@
 	 * A jQuery-UI Widget to build structured data about persistence queries
 	 *
 	 * @author Ryan Bales
-	 * @version 0.1
+	 * @version 1.0
 	 */
 
 	// closure scope, used by both widget classes
@@ -279,7 +279,7 @@
 						metric_operators = operators[metric.type];
 					}
 				});
-				related_operator.apeachselectbutton('option', 'dataProvider', metric_operators);
+				related_operator.mandrinselectbutton('option', 'dataProvider', metric_operators);
 			}
 		},
 		_onRemoveRule: function(e) {
@@ -394,8 +394,8 @@
 				metric_options.push(metric_option);
 			});
 
-			metric_selector.apeachselectbutton({dataProvider: metric_options, style: 'alt'});
-			operator_selector.apeachselectbutton({dataProvider: operator_options});
+			metric_selector.mandrinselectbutton({dataProvider: metric_options, style: 'alt'});
+			operator_selector.mandrinselectbutton({dataProvider: operator_options});
 			var delete_anchor = $('<a/>').addClass('remove').text('Delete');
 			var rule_uid = guid();
 			this.elements.rules[rule_uid] = rule_container;
@@ -438,8 +438,8 @@
 				};
 			$.each(this.elements.rules, function(uid, rule) {
 				var
-					metric_id = rule.find('.group-rule-metric').apeachselectbutton('getValue'),
-					operator = rule.find('.group-rule-operator').apeachselectbutton('getValue'),
+					metric_id = rule.find('.group-rule-metric').mandrinselectbutton('getValue'),
+					operator = rule.find('.group-rule-operator').mandrinselectbutton('getValue'),
 					value = rule.find('.group-rule-value').val(),
 					rule_definition = {
 						metric_id: metric_id,
