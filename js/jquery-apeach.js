@@ -34,6 +34,13 @@
 		triggerEvent = function(element, event_name, data) {
 			var event = $.Event(event_name);
 			element.trigger(event, [data]);
+		},
+		getObjectKeys = function(object) {
+			var keys = [];
+			$.each(object, function(key, value) {
+				keys.push(key);
+			});
+			return keys;
 		};
 
 	//============================================================================
@@ -218,7 +225,27 @@
 			});
 		},
 		_onGroupOperatorChange: function(e) {
-			// stub
+			var 
+				target = $(e.target),
+				group_type = parseInt(target.val()),
+				operator_text = null;
+
+			switch (group_type)
+			{
+				case GROUP_TYPE_INCLUSION:
+					operator_text = 'or';
+					break;
+				case GROUP_TYPE_EXCLUSION:
+					operator_text = 'and';
+					break;
+			}
+			this.element
+				.find('.apeach-or-segment')
+					.text(operator_text)
+					.end()
+				.find('.apeach-or-selection span')
+					.text("Add '" + operator_text.toUpperCase() + "' statement");
+			this.options.type = group_type;
 		},
 		_onGroupRuleMetricChange: function(e, data) {
 			var target = $(e.target);
@@ -243,9 +270,15 @@
 				rule_uid = rule_container.data('uid');
 
 			// if more than one rule
-			var keys = [];
-			$.each(this.elements.rules, function(key, value) { keys.push(key); });
+			var keys = getObjectKeys(this.elements.rules);
 			if (keys.length > 1) {
+				if (rule_container.hasClass('first')) {
+					rule_container.next('.apeach-add-or').remove();
+					rule_container.next('.apeach-group-or').addClass('first');
+				}
+				else {
+					rule_container.prev('.apeach-add-or').remove();
+				}
 				// remove rule
 				rule_container.remove();
 				delete this.elements.rules[rule_uid];
@@ -253,6 +286,9 @@
 			else {
 				alert('You may not delete the only rule in this group.');
 			}
+		},
+		_onCreateRule: function(e) {
+			this._addRule();
 		},
 		//..........................................................................
 		// Private Utility Methods
@@ -262,6 +298,7 @@
 			this.element.delegate('.remove', 'click', $.proxy(this._onRemoveRule, this));
 			this.element.delegate('select.group-operator-type', 'change', $.proxy(this._onGroupOperatorChange, this));
 			this.element.delegate('.group-rule-metric', 'change', $.proxy(this._onGroupRuleMetricChange, this));
+			this.element.delegate('.apeach-or-selection span', 'click', $.proxy(this._onCreateRule, this));
 		},
 		_installRemoveGroup: function() {
 			var remove_element = $('<div/>').addClass('remove-group').text('Remove');
@@ -342,6 +379,27 @@
 			var delete_anchor = $('<a/>').addClass('remove').text('Delete');
 			var rule_uid = guid();
 			this.elements.rules[rule_uid] = rule_container;
+			if (getObjectKeys(this.elements.rules).length > 1) {
+				var operator_text = null;
+				switch (this.options.type)
+				{
+					case GROUP_TYPE_INCLUSION:
+						operator_text = 'or';
+						break;
+					case GROUP_TYPE_EXCLUSION:
+						operator_text = 'and';
+						break;
+				}
+				$('<div/>')
+					.addClass('apeach-add-or')
+					.append(
+						$('<div/>').addClass('apeach-or-segment').text(operator_text)
+					)
+					.insertBefore(this.elements.ruleCreator);
+			}
+			else {
+				rule_container.addClass('first');
+			}
 			rule_container
 				.data('uid',rule_uid)
 				.append(metric_selector, operator_selector, delete_anchor)
