@@ -1,3 +1,3 @@
 A jQuery-UI widget to manage data query creation
 
-![ScreenShot](https://github.com/thinkt4nk/apeach/example.png)
+![ScreenShot](https://raw.github.com/thinkt4nk/apeach/master/example.png)
