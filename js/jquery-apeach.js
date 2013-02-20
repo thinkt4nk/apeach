@@ -35,6 +35,12 @@
 			var event = $.Event(event_name);
 			element.trigger(event, [data]);
 		},
+		/**
+		 * A helper that returns keys for a given object
+		 *
+		 * @param {object} o The object
+		 * @return {array} The list of keys
+		 */
 		getObjectKeys = function(o) {
 			var keys = [];
 			$.each(o, function(key, value) {
@@ -89,6 +95,15 @@
 		//..........................................................................
 		// Event Handlers
 		//..........................................................................
+		/**
+		 * The click handler for the 'remove group' element
+		 *		removes the clicked rule group
+		 *
+		 * @param {DOMEvent} e The click event
+		 * @param {object} data The data associated with the emitted event
+		 *									> {string} uid The uid for the group
+		 * @return {void}
+		 */
 		_onRemoveGroup: function(e, data) {
 			if (data.uid == null)
 				return;
@@ -109,16 +124,33 @@
 				.remove();
 			delete this.elements.groups[data.uid];
 		},
+		/**
+		 * The click handler for the 'create group' element
+		 *		adds a new group of the default group type (inclusion)
+		 *
+		 * @param {DOMEvent} e The click event
+		 * @return {void}
+		 */
 		_onCreateGroup: function(e) {
 			this._addGroup(GROUP_TYPE_INCLUSION);
 		},
 		//..........................................................................
 		// Private Utility Methods
 		//..........................................................................
+		/**
+		 * Binds events for this widget
+		 *
+		 * @return {void} 
+		 */
 		_bindEvents: function() {
 			this.element.bind('removegroup', $.proxy(this._onRemoveGroup, this));
 			this.element.delegate('.apeach-and-selection span', 'click', $.proxy(this._onCreateGroup, this));
 		},
+		/**
+		 * Creates the group creator element
+		 *
+		 * @return {void} 
+		 */
 		_initializeGroupCreator: function() {
 			var
 				and_segment = $('<div/>').addClass('apeach-and-segment').text('and'),
@@ -133,6 +165,11 @@
 			this.elements.groupCreator = group_creator;
 			group_creator.appendTo(this.element);
 		},
+		/**
+		 * Adds a rule group to this element
+		 *
+		 * @return {void} 
+		 */
 		_addGroup: function(group_type) {
 			var 
 				model = this.options.model,
@@ -163,6 +200,11 @@
 		//..........................................................................
 		// Public Methods
 		//..........................................................................
+		/**
+		 * Gets the query for the entire wiget
+		 *
+		 * @return {object} The query object for all rule groups
+		 */
 		getQuery: function() {
 			var groups = [];
 			$.each(this.elements.groups, function(uid, group) {
@@ -237,12 +279,24 @@
 		//..........................................................................
 		// Event Handlers
 		//..........................................................................
+		/**
+		 * Click event for the 'remove group' element, emits removegroup event
+		 *
+		 * @param {DOMEvent} The click event
+		 * @return {void} 
+		 */
 		_onRemoveGroup: function(e) {
 			var uid = this.options.uid;
 			triggerEvent(this.element, 'removegroup', {
 				uid: uid
 			});
 		},
+		/**
+		 * Change event handler for group operator select
+		 *
+		 * @param {DOMEvent} The change event
+		 * @return {void} 
+		 */
 		_onGroupOperatorChange: function(e) {
 			var 
 				target = $(e.target),
